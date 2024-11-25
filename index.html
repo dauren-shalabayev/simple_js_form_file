@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload File</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+    <label for="fileInput">Select a file:</label>
+    <input type="file" id="fileInput" name="file" />
+    <button type="button" id="uploadButton">Upload</button>
+
+  <div id="response"></div>
+
+  <script>
+    $("#uploadButton").on("click", function (e) {
+      e.preventDefault()
+      const fileInput = $("#fileInput")[0].files[0];
+
+      if (!fileInput) {
+        alert("Please select a file!");
+        return;
+      }
+
+      const form = new FormData();
+      form.append("file", fileInput); // Добавляем выбранный файл
+      form.append("id", "1235"); // Пример дополнительных данных
+
+      const settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "http://localhost:8000/api/v1/whitelists/load_file/",
+        "method": "POST",
+        "headers": {
+          "Authorization": "Token 494ee2a20ec0402a5b27e9dc638c0a830fe54899"
+        },
+        "processData": false,
+        "contentType": false,
+        "mimeType": "multipart/form-data",
+        "data": form
+      };
+
+      $.ajax(settings).done(function (response) {
+        console.log(response);
+        $("#response").text("Response: " + response); // Показать ответ сервера
+      }).fail(function (xhr, status, error) {
+        console.error("Error:", status, error);
+        $("#response").text("Error: " + error);
+      });
+    });
+  </script>
+</body>
+</html>
